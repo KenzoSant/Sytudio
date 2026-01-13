@@ -136,7 +136,7 @@ const useScrollReveal = () => {
         duration: 1800
       });
 
-      sr.reveal('hr, .navbar, .prod__content', {
+      sr.reveal('hr, .navbar, .prod__content, .prod__container', {
         origin: 'top',
         delay: 900,
         interval: 180,
