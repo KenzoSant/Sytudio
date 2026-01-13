@@ -3,13 +3,18 @@ import { io } from "socket.io-client";
 
 const FrontContext = createContext();
 
-const socket = io("http://localhost:4000");
+const API_URL = import.meta.env.VITE_API_URL;
+
+// socket conexão
+const socket = io(API_URL, {
+  transports: ["websocket"]
+});
 
 export function FrontProvider({ children }) {
   const [products, setProducts] = useState([]);
 
   const fetchInitial = async () => {
-    const res = await fetch("http://localhost:4000/api/products");
+    const res = await fetch(`${API_URL}/api/products`);
     const data = await res.json();
     setProducts(data);
   };
@@ -21,7 +26,9 @@ export function FrontProvider({ children }) {
       setProducts(data);
     });
 
-    return () => socket.off("productsUpdated");
+    return () => {
+      socket.off("productsUpdated");
+    };
   }, []);
 
   return (
