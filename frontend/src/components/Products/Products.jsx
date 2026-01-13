@@ -1,7 +1,9 @@
 import "./Products.css";
 import { useFront } from "../../context/FrontContext";
+import useScrollReveal from "../../hooks/useScroolReveal";
 
 export default function Products() {
+  useScrollReveal(); 
   const { products } = useFront();
 
   return (
