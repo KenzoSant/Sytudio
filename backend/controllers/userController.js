@@ -27,7 +27,7 @@ export const registerUser = async (req, res) => {
       verified: false,
     });
 
-    const link = `http://localhost:5173/verify/${token}`;
+    const link = `${process.env.FRONT_URL}/verify/${token}`;
 
     await sendEmail(
       email,
