@@ -1,0 +1,85 @@
+.admin-login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, 
+    var(--color-login-gradient-1), 
+    var(--color-login-gradient-2), 
+    var(--color-login-gradient-3));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  background: var(--color-bg-white);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeUp .6s ease;
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: .5rem;
+  color: var(--color-text-primary);
+}
+
+.login-card input {
+  padding: .75rem;
+  border-radius: .5rem;
+  border: 1px solid var(--color-border-medium);
+  font-size: 1rem;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: var(--color-login-gradient-3);
+}
+
+.login-card button {
+  background: var(--color-login-button);
+  color: #fff;
+  border: none;
+  padding: .75rem;
+  border-radius: .5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.login-card button:hover {
+  background: var(--color-login-button-hover);
+}
+
+.login-error {
+  background: var(--color-login-error-bg);
+  color: var(--color-login-error);
+  padding: .5rem;
+  border-radius: .5rem;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.login-success {
+  background: var(--color-login-success-bg);
+  color: var(--color-login-success);
+  padding: .5rem;
+  border-radius: .5rem;
+  font-size: .9rem;
+  text-align: center;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

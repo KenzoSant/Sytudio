@@ -1,0 +1,190 @@
+/* HEADER */
+.header {
+  min-height: 100vh;
+  min-height: 100svh; /* Usa viewport seguro para mobile */
+  background-color: #314351;
+  background-blend-mode: multiply;
+  background: url('../../assets/img/08.png') no-repeat center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CONTAINER */
+.banner {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem); /* Gap responsivo */
+  padding: 0 1rem;
+}
+
+/* TÍTULO */
+.section__title_name {
+  font-size: clamp(3rem, 10vw, 12rem); /* Fonte responsiva com clamp */
+  line-height: 1.1;
+  color: var(--white-color);
+  margin: 0;
+  word-break: break-word; /* Evita overflow horizontal */
+  padding: 0 0.5rem;
+}
+
+/* SUBTÍTULOS */
+.section_infos {
+  width: 100%;
+  max-width: 1000px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 2vw, 2rem);
+  padding: 0 1rem;
+}
+
+.section__subtitle {
+  color: #ddd;
+}
+
+.section__subtitle.info1 {
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  margin-bottom: 8px;
+}
+
+.section__subtitle.info2 {
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  text-align: justify;
+  width: 90%;
+  justify-self: center;
+  line-height: 1.5;
+}
+
+/* BOTÃO */
+.section_button {
+  margin-top: 24px;
+}
+
+.button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+  background-color: var(--background-color);
+  color: var(--first-color);
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  min-height: 44px; /* Altura mínima para touch */
+}
+
+.button.btn:hover {
+  background-color: var(--first-color); 
+  color: var(--background-color);   
+}
+
+/* ========================= RESPONSIVIDADE ========================= */
+
+/* Tablet e telas médias */
+@media (max-width: 1024px) {
+  .section_infos {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .section__subtitle.info2 {
+    width: 95%;
+    text-align: center;
+  }
+}
+
+/* Tablet pequeno */
+@media (max-width: 768px) {
+  .section_infos {
+    grid-template-columns: 1fr; /* Coluna única */
+    gap: 1.5rem;
+  }
+  
+  .section__subtitle.info2 {
+    width: 100%;
+    text-align: center;
+    padding: 0 0.5rem;
+  }
+  
+  .header {
+    padding: 1rem 0.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .banner {
+    gap: 1.5rem;
+  }
+  
+  .section_infos {
+    margin: 1.5rem auto;
+    gap: 1rem;
+  }
+  
+  .section__title_name {
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+  }
+  
+  .section__subtitle.info1 {
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
+  }
+  
+  .section__subtitle.info2 {
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 0;
+  }
+  
+  .section_button {
+    margin-top: 1rem;
+  }
+  
+  .button.btn {
+    width: 100%;
+    max-width: 280px;
+    padding: 0.875rem 1.5rem;
+  }
+}
+
+/* Mobile muito pequeno */
+@media (max-width: 360px) {
+  .section__title_name {
+    font-size: 2.2rem;
+  }
+  
+  .section_infos {
+    margin: 1rem auto;
+  }
+  
+  .button.btn {
+    font-size: 0.85rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* Orientação paisagem em mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .header {
+    min-height: auto;
+    padding: 2rem 1rem;
+  }
+  
+  .banner {
+    gap: 1rem;
+  }
+  
+  .section__title_name {
+    font-size: clamp(2.5rem, 8vh, 4rem);
+  }
+}

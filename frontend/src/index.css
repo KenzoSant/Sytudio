@@ -1,0 +1,13 @@
+:root {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: var(--first-color);
+
+  --white-color: #fff;
+  --background-color: #F0F1F1;
+  --first-color: #000000;
+  --second-color: #606E78;
+  --third-color: #C9CDD0;
+  --detail-color: #959DA4;
+
+}
+

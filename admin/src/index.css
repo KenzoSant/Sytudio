@@ -1,0 +1,56 @@
+:root {
+  /* Cores Principais - Admin Panel */
+  --color-primary: #4a90e2;
+  --color-primary-dark: #357ae8;
+  --color-secondary: #2c3e50;
+  
+  /* Cores Principais - Login */
+  --color-login-gradient-1: #0f2027;
+  --color-login-gradient-2: #203a43;
+  --color-login-gradient-3: #2c5364;
+  --color-login-button: #2c5364;
+  --color-login-button-hover: #203a43;
+  
+  /* Cores de Feedback */
+  --color-success: #1c7c42;
+  --color-success-bg: #e2ffe9;
+  --color-login-success: #007a2f;
+  --color-login-success-bg: #d9ffe1;
+  --color-error: #b30000;
+  --color-error-bg: #ffe2e2;
+  --color-login-error: #b10000;
+  --color-login-error-bg: #ffdede;
+  
+  /* Cores de Texto */
+  --color-text-primary: #2c3e50;
+  --color-text-secondary: #444;
+  --color-text-muted: #777;
+  --color-text-light: #888;
+  
+  /* Cores de Fundo */
+  --color-bg-white: #ffffff;
+  --color-bg-light: #fafbfc;
+  --color-bg-hover: #f3f8ff;
+  --color-bg-disabled: #f2f2f2;
+  --color-bg-gray: #e0e0e0;
+  --color-bg-gray-hover: #cfcfcf;
+  
+  /* Cores de Bordas */
+  --color-border-light: #e6e6e6;
+  --color-border-medium: #ccc;
+  --color-border-dashed: #cfd6dd;
+  --color-border-image: #ddd;
+  
+  /* Cores de Ação */
+  --color-danger: #ff4d4d;
+  --color-danger-hover: #e53939;
+
+  /* Cores específicas do Dashboard */
+  --color-dashboard-gradient-1: #667eea;
+  --color-dashboard-gradient-2: #764ba2;
+  --color-dashboard-accent: #ff7e5f;
+
+  /* Cores específicas do List Product */
+  --color-delete-btn: #ff6b6b;
+  --color-save-hover: #219150;
+}

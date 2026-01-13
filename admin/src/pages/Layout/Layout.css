@@ -1,0 +1,19 @@
+.app-layout {
+  display: flex;
+}
+
+/* Desktop */
+.app-content {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .app-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
