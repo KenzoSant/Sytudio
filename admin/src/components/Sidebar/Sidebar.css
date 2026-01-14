@@ -5,7 +5,7 @@
 .sidebar-container {
   width: 250px;
   height: 100vh;
-  background: linear-gradient(180deg, #1f2a36 0%, #111820 100%);
+  background: var(--color-black);
   color: white;
   position: fixed;
   left: 0;
@@ -91,7 +91,7 @@
 /* ACTIVE */
 
 .nav-link.active {
-  background:linear-gradient(90deg,rgba(74,144,226,.25),transparent);
+  background:linear-gradient(90deg,rgba(255, 255, 255, 0.25),transparent);
   color:white;
 }
 
@@ -103,7 +103,7 @@
   transform:translateY(-50%);
   width:4px;
   height:70%;
-  background:#4a90e2;
+  background:#ffffff;
   border-radius:0 4px 4px 0;
 }
 
@@ -122,10 +122,15 @@
 
 /* ICON COLOR */
 
+/*
 .nav-icon.dashboard i{color:#4a90e2;}
 .nav-icon.add i{color:#2ecc71;}
 .nav-icon.list i{color:#f39c12;}
 .nav-icon.settings i{color:#9b59b6;}
+*/
+.nav-icon.dashboard i{color:#ffffff;}
+.nav-icon.add i{color:#ffffff;}
+.nav-icon.list i{color:#ffffff;}
 
 /* TEXT */
 
@@ -185,7 +190,7 @@
   top:1rem;
   left:1rem;
   z-index:1200;
-  background:linear-gradient(135deg,#4a90e2,#357ae8);
+  background:linear-gradient(135deg,#0a0a0a,#7c7c7c);
   border:none;
   width:30px;
   height:30px;

@@ -3,7 +3,7 @@ import { useFront } from "../../context/FrontContext";
 import useScrollReveal from "../../hooks/useScroolReveal";
 
 export default function Products() {
-  useScrollReveal(); 
+  useScrollReveal();
   const { products } = useFront();
 
   return (
@@ -26,9 +26,18 @@ export default function Products() {
                 <span className="prod__price">R$ {prod.valor}</span>
               </div>
 
-              <button className="button prod__button">
+              <button
+                className="button prod__button"
+                onClick={() => {
+                  const message = `Olá! Gostaria de mais informações sobre o produto: ${prod.nome}`;
+                  const url = `https://wa.me/551992465322?text=${encodeURIComponent(message)}`;
+                  window.open(url, "_blank");
+                }}
+              >
                 <i className="bx bx-message-circle-dots prod__icon"></i>
               </button>
+
+
             </div>
           ))}
         </div>

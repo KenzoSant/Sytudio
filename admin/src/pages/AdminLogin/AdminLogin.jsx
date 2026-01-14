@@ -7,20 +7,25 @@ export default function AdminLogin() {
   const { login } = useAdmin();
   const navigate = useNavigate();
 
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [error,setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    try{
-      await login(email,password);
+    try {
+      await login(email, password);
       navigate("/list");
-    }catch(err){
+    } catch (err) {
       setError(err.message);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -30,21 +35,37 @@ export default function AdminLogin() {
 
         {error && <p className="login-error">{error}</p>}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e=>setEmail(e.target.value)}
-        />
+        <div className="input-group">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={e=>setPassword(e.target.value)}
-        />
+        <div className="input-group password-input">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={togglePasswordVisibility}
+            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+          >
+            <i className={`bxr ${showPassword ? "bx-eye-slash" : "bx-eye"}`}></i>
+          </button>
+        </div>
 
-        <button type="submit">Entrar</button>
+        <button type="submit" className="button-submit">
+          Entrar
+        </button>
       </form>
     </div>
   );

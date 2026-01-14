@@ -23,7 +23,7 @@
 
 .form-header h2 {
   font-size: 2rem;
-  color: var(--color-text-primary);
+  color: var(--color-black);
   display: flex;
   justify-content: center;
   align-items: center;

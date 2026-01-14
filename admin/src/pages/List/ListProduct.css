@@ -17,7 +17,8 @@
 
 .list-header h2 {
   font-size: 2rem;
-  color: var(--color-text-primary);
+  /* color: var(--color-text-primary); */
+  color: var(--color-black);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -47,7 +48,7 @@
   align-items: center;
   gap: .5rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-black);
   box-shadow: 0 3px 6px rgba(0,0,0,.08);
 }
 
@@ -174,7 +175,7 @@
 .product-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-black);
 }
 
 .product-description {
@@ -250,7 +251,7 @@
 .edit-form h3 {
   text-align: center;
   margin-bottom: 1rem;
-  color: var(--color-text-primary);
+  color: var(--color-black);
 }
 
 .form-group {
