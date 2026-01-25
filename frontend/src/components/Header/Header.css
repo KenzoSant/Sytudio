@@ -176,7 +176,6 @@
 /* Orientação paisagem em mobile */
 @media (max-height: 600px) and (orientation: landscape) {
   .header {
-    min-height: auto;
     padding: 2rem 1rem;
   }
   
