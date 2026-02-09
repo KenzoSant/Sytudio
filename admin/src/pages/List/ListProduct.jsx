@@ -1,7 +1,7 @@
-// components/ListProduct/ListProduct.jsx
 import { useEffect, useState, useCallback } from "react";
 import { useAdmin } from "../../context/AdminContext";
-import ConfirmModal from "../../components/ConfirmModal/ConfirmModal"
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
+import ProductImageCarousel from "../../components/ProductImageCarousel/ProductImageCarousel";
 import "./ListProduct.css";
 
 export default function ListProduct() {
@@ -29,7 +29,6 @@ export default function ListProduct() {
     loadProducts();
   };
 
-
   const loadProducts = useCallback(async () => {
     setIsLoading(true);
     setError("");
@@ -50,49 +49,97 @@ export default function ListProduct() {
 
   const startEdit = (product) => {
     setEditingId(product._id);
+
+    const imagens = Array.isArray(product.imagemUrl)
+      ? product.imagemUrl
+      : product.imagemUrl
+        ? [product.imagemUrl]
+        : [];
+
     setEditForm({
       nome: product.nome || "",
       descricao: product.descricao || "",
       valor: product.valor || "",
-      quantidade: product.quantidade || ""
+      quantidade: product.quantidade || "",
+      imagemUrl: imagens, // existentes
+      novasImagens: [] // Files
     });
+
     setError("");
     setSuccess("");
   };
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditForm(prev => ({
+    setEditForm((prev) => ({
       ...prev,
       [name]: value
     }));
   };
 
+  const handleNewImages = (e) => {
+    const files = Array.from(e.target.files || []);
+    setEditForm((prev) => ({
+      ...prev,
+      novasImagens: files
+    }));
+  };
+
+  const removeExistingImage = (url) => {
+    setEditForm((prev) => ({
+      ...prev,
+      imagemUrl: (prev.imagemUrl || []).filter((u) => u !== url)
+    }));
+  };
+
   const handleUpdate = async (id) => {
-    if (!editForm.nome || !editForm.descricao || !editForm.valor || !editForm.quantidade) {
+    if (
+      !editForm.nome ||
+      !editForm.descricao ||
+      !editForm.valor ||
+      editForm.quantidade === undefined ||
+      editForm.quantidade === null
+    ) {
       setError("Todos os campos são obrigatórios!");
       return;
     }
 
     try {
-      await updateProduct(id, {
-        nome: editForm.nome.trim(),
-        descricao: editForm.descricao.trim(),
-        valor: parseFloat(editForm.valor).toFixed(2),
-        quantidade: parseInt(editForm.quantidade)
-      });
+      const data = new FormData();
+      data.append("nome", editForm.nome.trim());
+      data.append("descricao", editForm.descricao.trim());
+      data.append("valor", parseFloat(editForm.valor).toFixed(2));
+      data.append("quantidade", parseInt(editForm.quantidade));
+
+      // imagens que devem permanecer
+      data.append("imagemUrl", JSON.stringify(editForm.imagemUrl || []));
+
+      // novas imagens (até completar 3 no total)
+      const remainingSlots = Math.max(
+        0,
+        3 - ((editForm.imagemUrl || []).length || 0)
+      );
+
+      (editForm.novasImagens || [])
+        .slice(0, remainingSlots)
+        .forEach((f) => data.append("imagem", f));
+
+      const res = await updateProduct(id, data);
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Falha ao atualizar");
+      }
 
       setSuccess("Produto atualizado com sucesso!");
       setEditingId(null);
       loadProducts();
 
-      // Limpar mensagem após 3 segundos
       setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
       setError("Erro ao atualizar produto: " + error.message);
     }
   };
-
 
   const cancelEdit = () => {
     setEditingId(null);
@@ -103,7 +150,9 @@ export default function ListProduct() {
   return (
     <div className="list-product-container">
       <div className="list-header">
-        <h2><i className="bx bx-package"></i> Lista de Produtos</h2>
+        <h2>
+          <i className="bx bx-package"></i> Lista de Produtos
+        </h2>
         <p>Gerencie seus produtos cadastrados</p>
 
         <div className="stats">
@@ -113,9 +162,17 @@ export default function ListProduct() {
           </div>
           <div className="stat-card">
             <i className="bx bx-dollar"></i>
-            <span>Valor Total: R$ {
-              products.reduce((total, p) => total + (parseFloat(p.valor) || 0) * (parseInt(p.quantidade) || 0), 0).toFixed(2)
-            }</span>
+            <span>
+              Valor Total: R${" "}
+              {products
+                .reduce(
+                  (total, p) =>
+                    total +
+                    (parseFloat(p.valor) || 0) * (parseInt(p.quantidade) || 0),
+                  0
+                )
+                .toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
@@ -146,12 +203,12 @@ export default function ListProduct() {
           <p>Adicione seu primeiro produto para começar!</p>
         </div>
       ) : (
-
         <div className="products-grid">
-          {products.map(product => (
+          {products.map((product) => (
             <div
               key={product._id}
-              className={`product-card ${editingId === product._id ? 'editing' : ''}`}
+              className={`product-card ${editingId === product._id ? "editing" : ""
+                }`}
             >
               {editingId === product._id ? (
                 <div className="edit-form">
@@ -177,6 +234,39 @@ export default function ListProduct() {
                       placeholder="Descrição do produto"
                       rows="3"
                     />
+                  </div>
+
+                  {/* IMAGENS (remover atuais / adicionar novas) */}
+                  <div className="form-group">
+                    <label>Imagens</label>
+
+                    <div className="edit-images">
+                      {(editForm.imagemUrl || []).map((url) => (
+                        <div key={url} className="edit-image-item">
+                          <img src={url} alt="Imagem" />
+                          <button
+                            type="button"
+                            className="remove-image-mini"
+                            onClick={() => removeExistingImage(url)}
+                            title="Remover imagem"
+                          >
+                            <i className="bx bx-trash"></i>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <input
+                      type="file"
+                      name="imagem"
+                      accept="image/*"
+                      multiple
+                      onChange={handleNewImages}
+                    />
+                    <small style={{ opacity: 0.8 }}>
+                      Você pode manter/remover as atuais e adicionar novas
+                      (máximo 3 no total).
+                    </small>
                   </div>
 
                   <div className="form-group">
@@ -214,10 +304,7 @@ export default function ListProduct() {
                       <i className="bx bx-save"></i>
                       Salvar
                     </button>
-                    <button
-                      className="cancel-btn"
-                      onClick={cancelEdit}
-                    >
+                    <button className="cancel-btn" onClick={cancelEdit}>
                       <i className="bx bx-x"></i>
                       Cancelar
                     </button>
@@ -226,22 +313,7 @@ export default function ListProduct() {
               ) : (
                 <>
                   <div className="product-image">
-                    {product.imagemUrl ? (
-                      <img
-                        src={product.imagemUrl}
-                        alt={product.nome}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="no-image">
-                        <i className="bx bx-image"></i>
-                        <span>Sem imagem</span>
-                      </div>
-                    )}
-
-                    {product.quantidade <= 0 && (
-                      <span className="stock-badge out-of-stock">Esgotado</span>
-                    )}
+                    <ProductImageCarousel imagemUrl={product.imagemUrl} nome={product.nome} />
                   </div>
 
                   <div className="product-content">
@@ -250,7 +322,9 @@ export default function ListProduct() {
 
                     <div className="product-details">
                       <div className="detail">
-                        <span>R$ {parseFloat(product.valor || 0).toFixed(2)}</span>
+                        <span>
+                          R$ {parseFloat(product.valor || 0).toFixed(2)}
+                        </span>
                       </div>
                       <div className="detail">
                         <i className="bx bx-box"></i>
@@ -289,7 +363,6 @@ export default function ListProduct() {
         onConfirm={confirmDelete}
         onCancel={() => setShowConfirm(false)}
       />
-
     </div>
   );
 }

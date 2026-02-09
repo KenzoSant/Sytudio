@@ -1,0 +1,67 @@
+/* src/components/ProductImageCarousel/ProductImageCarousel.css */
+
+.pic-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* garante que as imagens preencham */
+.pic-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: opacity;
+}
+
+/* current por baixo (sempre visível) */
+.pic-current {
+  z-index: 1;
+  opacity: 1;
+}
+
+/* prev por cima e some suavemente */
+.pic-prev {
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+
+.pic-fade-out {
+  opacity: 0;
+}
+
+/* dots */
+.pic-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.pic-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.6;
+  pointer-events: auto;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.pic-dot.active {
+  opacity: 1;
+  transform: scale(1.15);
+}

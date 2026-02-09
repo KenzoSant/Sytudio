@@ -53,6 +53,7 @@
 .prod__subtitle {
   font-size: 0.8rem;
   opacity: 0.7;
+  white-space: pre-line;
 }
 
 .prod__price {

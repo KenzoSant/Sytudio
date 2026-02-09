@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 const AdminContext = createContext();
 
 export function AdminProvider({ children }) {
+  // const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const BASE_URL = "http://localhost:4000";
 
   const API_PRODUCTS = `${BASE_URL}/api/products`;
   const API_USERS = `${BASE_URL}/api/users`;
@@ -90,11 +91,14 @@ export function AdminProvider({ children }) {
     });
   };
 
+  // ✅ ALTERADO: aceita JSON OU FormData (para upload de múltiplas imagens no edit)
   const updateProduct = async (id, data) => {
+    const isFormData = data instanceof FormData;
+
     return fetchWithAuth(`${API_PRODUCTS}/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      headers: isFormData ? {} : { "Content-Type": "application/json" },
+      body: isFormData ? data : JSON.stringify(data)
     });
   };
 
@@ -111,16 +115,16 @@ export function AdminProvider({ children }) {
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         return {
           ...deliveryData,
-          dataEntrega: date.toISOString().split('T')[0]
+          dataEntrega: date.toISOString().split("T")[0]
         };
       }
       // Se já for string, verifica o formato
-      else if (typeof deliveryData.dataEntrega === 'string') {
+      else if (typeof deliveryData.dataEntrega === "string") {
         // Se estiver no formato ISO (com T), extrai apenas a data
-        if (deliveryData.dataEntrega.includes('T')) {
+        if (deliveryData.dataEntrega.includes("T")) {
           return {
             ...deliveryData,
-            dataEntrega: deliveryData.dataEntrega.split('T')[0]
+            dataEntrega: deliveryData.dataEntrega.split("T")[0]
           };
         }
         // Se já estiver no formato YYYY-MM-DD, mantém
@@ -132,12 +136,14 @@ export function AdminProvider({ children }) {
 
   // Função para formatar data para exibição
   const formatDateForDisplay = (dateString) => {
-    if (!dateString) return '';
-    
+    if (!dateString) return "";
+
     try {
       const date = new Date(dateString);
       // Ajusta para o timezone local
-      const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+      const adjustedDate = new Date(
+        date.getTime() + date.getTimezoneOffset() * 60000
+      );
       return adjustedDate.toLocaleDateString("pt-BR");
     } catch (error) {
       console.error("Erro ao formatar data:", error);
@@ -149,16 +155,17 @@ export function AdminProvider({ children }) {
     try {
       const res = await fetch(API);
       const data = await res.json();
-      
+
       // Garante que todas as datas sejam strings no formato YYYY-MM-DD
-      const adjustedData = data.map(delivery => ({
+      const adjustedData = data.map((delivery) => ({
         ...delivery,
         // Se a data estiver em formato ISO, converte para YYYY-MM-DD
-        dataEntrega: delivery.dataEntrega && delivery.dataEntrega.includes('T') 
-          ? delivery.dataEntrega.split('T')[0] 
-          : delivery.dataEntrega
+        dataEntrega:
+          delivery.dataEntrega && delivery.dataEntrega.includes("T")
+            ? delivery.dataEntrega.split("T")[0]
+            : delivery.dataEntrega
       }));
-      
+
       setDeliveries(adjustedData);
     } catch (error) {
       console.error("Erro ao buscar entregas:", error);
@@ -168,7 +175,7 @@ export function AdminProvider({ children }) {
   const addDelivery = async (delivery) => {
     try {
       const adjustedDelivery = adjustDeliveryDate(delivery);
-      
+
       await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -184,7 +191,7 @@ export function AdminProvider({ children }) {
   const updateDelivery = async (id, data) => {
     try {
       const adjustedData = adjustDeliveryDate(data);
-      
+
       await fetch(`${API}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -227,7 +234,7 @@ export function AdminProvider({ children }) {
         addDelivery,
         updateDelivery,
         deleteDelivery,
-        formatDateForDisplay // Exporta a função para uso nos componentes
+        formatDateForDisplay 
       }}
     >
       {children}

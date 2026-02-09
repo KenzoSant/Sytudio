@@ -1,4 +1,3 @@
-// components/AddProduct/AddProduct.jsx
 import { useState } from "react";
 import { useAdmin } from "../../context/AdminContext";
 import "./AddProduct.css";
@@ -14,36 +13,45 @@ export default function AddProduct() {
     descricao: "",
     valor: "",
     quantidade: "",
-    imagem: null
+    imagem: []
   });
 
-  const [preview, setPreview] = useState("");
+  const [preview, setPreview] = useState([]); 
+  const [activePreview, setActivePreview] = useState(0);
 
-  const handleChange = (e) => {
+   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === "imagem" && files && files[0]) {
-      const file = files[0];
-      setForm({ ...form, imagem: file });
-      
-      // Criar preview da imagem
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (name === "imagem" && files) {
+      const fileList = Array.from(files).slice(0, 3);
+      setForm({ ...form, imagem: fileList });
+
+      // preview múltiplo
+      Promise.all(
+        fileList.map(
+          (file) =>
+            new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.readAsDataURL(file);
+            })
+        )
+      ).then((urls) => {
+        setPreview(urls);
+        setActivePreview(0);
+      });
     } else {
       setForm({ ...form, [name]: value });
     }
   };
 
-  const handleSubmit = async (e) => {
+
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
     setIsLoading(true);
 
-    // Validação
     if (!form.nome || !form.descricao || !form.valor || !form.quantidade) {
       setError("Todos os campos são obrigatórios!");
       setIsLoading(false);
@@ -62,25 +70,25 @@ export default function AddProduct() {
       data.append("descricao", form.descricao.trim());
       data.append("valor", parseFloat(form.valor).toFixed(2));
       data.append("quantidade", parseInt(form.quantidade));
-      
-      if (form.imagem) {
-        data.append("imagem", form.imagem);
+
+      // agora envia até 3 imagens na mesma key "imagem"
+      if (form.imagem && form.imagem.length > 0) {
+        form.imagem.slice(0, 3).forEach((f) => data.append("imagem", f));
       }
 
       const res = await createProduct(data);
 
       if (res.ok) {
         setSuccess("Produto cadastrado com sucesso!");
-        
-        // Reset form
         setForm({
           nome: "",
           descricao: "",
           valor: "",
           quantidade: "",
-          imagem: null
+          imagem: []
         });
-        setPreview("");
+        setPreview([]);
+        setActivePreview(0);
       } else {
         const err = await res.json();
         setError(err.error || "Erro ao cadastrar produto");
@@ -92,9 +100,10 @@ export default function AddProduct() {
     }
   };
 
-  const handleClearImage = () => {
-    setForm({ ...form, imagem: null });
-    setPreview("");
+   const handleClearImage = () => {
+    setForm({ ...form, imagem: [] });
+    setPreview([]);
+    setActivePreview(0);
   };
 
   return (
@@ -206,22 +215,38 @@ export default function AddProduct() {
                 name="imagem"
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleChange}
                 disabled={isLoading}
                 className="file-input"
               />
               
-              <label htmlFor="imagem" className="file-upload-label">
+               <label htmlFor="imagem" className="file-upload-label">
                 <i className="bx bx-cloud-upload"></i>
-                <span>Clique para selecionar uma imagem</span>
+                <span>Clique para selecionar até 3 imagens</span>
                 <span className="file-info">PNG, JPG, WEBP (Max. 5MB)</span>
               </label>
               
-              {preview && (
+              {preview.length > 0 && (
                 <div className="image-preview">
-                  <img src={preview} alt="Preview" />
-                  <button 
-                    type="button" 
+                  <img src={preview[activePreview]} alt="Preview" />
+
+                  {preview.length > 1 && (
+                    <div className="image-dots">
+                      {preview.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          className={`dot ${idx === activePreview ? "active" : ""}`}
+                          onClick={() => setActivePreview(idx)}
+                          aria-label={`Imagem ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
                     className="remove-image-btn"
                     onClick={handleClearImage}
                     disabled={isLoading}
@@ -230,13 +255,14 @@ export default function AddProduct() {
                   </button>
                 </div>
               )}
-              
-              {form.imagem && !preview && (
+
+              {form.imagem?.length > 0 && preview.length === 0 && (
                 <div className="file-selected">
                   <i className="bx bx-check-circle"></i>
-                  <span>{form.imagem.name}</span>
+                  <span>{form.imagem.length} arquivo(s) selecionado(s)</span>
                 </div>
               )}
+
             </div>
           </div>
         </div>
@@ -260,8 +286,8 @@ export default function AddProduct() {
             )}
           </button>
           
-          <button 
-            type="button" 
+           <button
+            type="button"
             className="clear-btn"
             onClick={() => {
               setForm({
@@ -269,9 +295,10 @@ export default function AddProduct() {
                 descricao: "",
                 valor: "",
                 quantidade: "",
-                imagem: null
+                imagem: []
               });
-              setPreview("");
+              setPreview([]);
+              setActivePreview(0);
               setError("");
               setSuccess("");
             }}

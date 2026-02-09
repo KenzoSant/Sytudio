@@ -18,10 +18,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  imagemUrl: {
-    type: String,
-    required: true
+  imagemUrl: { 
+    type: [String], 
+    required: true 
   }
+
 }, { timestamps: true });
 
 export default mongoose.model("Product", productSchema);

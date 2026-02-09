@@ -9,13 +9,15 @@ import {
 
 const router = express.Router();
 
-router.post("/", upload.single("imagem"), createProduct);
+// antes: upload.single("imagem")
+router.post("/", upload.array("imagem", 3), createProduct);
+
 router.get("/", getProducts);
 router.get("/:id", async (req,res)=>{
   const p = await Product.findById(req.params.id);
   res.json(p);
 });
-router.put("/:id", updateProduct);
+router.put("/:id", upload.array("imagem", 3), updateProduct);
 router.delete("/:id", deleteProduct);
 
 export default router;
