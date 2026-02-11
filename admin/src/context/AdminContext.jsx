@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 const AdminContext = createContext();
 
 export function AdminProvider({ children }) {
-  // const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-  const BASE_URL = "http://localhost:4000";
+  // const BASE_URL = "http://localhost:4000";
 
   const API_PRODUCTS = `${BASE_URL}/api/products`;
   const API_USERS = `${BASE_URL}/api/users`;
