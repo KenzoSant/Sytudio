@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Sytudio](https://github.com/user-attachments/assets/267d4bf0-fc2c-4869-9d1e-1369c796c7ad)
+<img width="1890" height="1077" alt="Captura de tela 2026-03-26 152844" src="https://github.com/user-attachments/assets/adf2ad02-b5b8-4f89-b206-6e11f7bee672" />
 
 **Uma plataforma de e-commerce moderna, segura e escalável construída com React, Node.js e MongoDB**
 
