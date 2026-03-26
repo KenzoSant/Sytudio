@@ -1,194 +1,146 @@
 .products {
-  background: var(--first-color);
-  min-height: 100vh;
-  padding: 4.5rem 0 0;
+  background-color: #000;
+  color: #fff;
 }
 
 .prod__container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  padding-top: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  padding-top: 3rem;
 }
 
 
 /* CARD */
 .prod__content {
   position: relative;
-  background: var(--first-color);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0;
   border-radius: 1rem;
-  overflow: hidden;
-  transition: transform 0.3s ease;
+  border: none;
+  transition: all .4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .prod__content:hover {
-  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* IMAGEM */
 .prod__img {
   width: 100%;
-  height: 350px;
-  object-fit: cover;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 1rem;
   margin-bottom: 1rem;
-  transition: transform 0.5s ease;
 }
-    
 
-.prod__content:hover .prod__img {
-  transform: scale(1.05);
+.prod__content:hover .pic-img {
+  transform: scale(1.1);
+}
+
+.pic-img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* INFOS */
 .prod__infos {
-  padding: 1rem;
-  text-align: left;
+  padding: 0 1.25rem 1.25rem; /* Reduced padding */
 }
 
+
+
 .prod__title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-bold);
+  color: #fff;
+  margin-bottom: .5rem;
 }
 
 .prod__subtitle {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  white-space: pre-line;
+  font-size: var(--small-font-size);
+  color: var(--third-color);
+  margin-bottom: 1rem;
+  display: block;
+  line-height: 1.5;
+  white-space: pre-wrap; /* Preserves newlines from backend */
 }
 
+.prod__subtitle p {
+    margin: 0;
+}
+
+
 .prod__price {
-  font-weight: 600;
-  margin-top: 0.5rem;
-  display: block;
+  font-size: 1.25rem;
+  font-weight: var(--font-bold);
+  color: #fff;
 }
 
 /* BOTÃO */
 .prod__button {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: .5rem;
-  border-radius: .25rem .25rem .25rem .25rem;
+  border-radius: .5rem;
   position: absolute;
   right: -3rem;
-  bottom: 0;
-  transition: right 0.3s ease;
-  background-color: var(--second-color);
-  border: none;
-  cursor: pointer;
+  bottom: .75rem;
+  opacity: 0;
+  transition: right .6s cubic-bezier(0.23, 1, 0.32, 1), opacity .5s ease;
+  background-color: #fff;
+  color: var(--first-color);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 .prod__content:hover .prod__button {
-  right: 0rem;
+  right: .75rem;
+  opacity: 1;
+}
+
+.prod__button:hover {
+  background-color: var(--third-color);
+  transform: scale(1.1);
 }
 
 .prod__icon {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   transition: .3s;
-  color: var(--background-color);
+  color: var(--first-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ========================= */
-/* RESPONSIVO - MOBILE PEQUENO */
-/* ========================= */
 
-@media (max-width: 480px) {
-  .products {
-    padding: 1.5rem 4% 0;
-    min-height: auto;
-    padding-bottom: 2rem;
-  }
-  
-   .prod__container {
-    grid-template-columns: 1fr;
-  }
-  
-  .prod__img {
-    height: 200px;
-  }
-  
-  .prod__infos {
-    padding: 0.875rem;
-  }
-  
-  .prod__title {
-    font-size: 1.1rem;
-  }
-  
-  .prod__subtitle {
-    font-size: 0.9rem;
-  }
-  
-  .prod__button {
-    padding: 0.625rem;
-    min-height: 40px;
-    min-width: 40px;
+.loading-products {
+    color: var(--third-color);
+    text-align: center;
+    grid-column: 1 / -1;
+}
+
+@media screen and (max-width: 1024px) {
+  .prod__container {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ========================= */
-/* RESPONSIVO - MOBILE MUITO PEQUENO */
-/* ========================= */
-
-@media (max-width: 360px) {
-  .products {
-    padding: 1.25rem 3% 0;
-  }
-  
+@media screen and (max-width: 767px) {
   .prod__container {
     grid-template-columns: 1fr;
-  }
-
-  .prod__img {
-    height: 200px;
-  }
-  
-  .prod__infos {
-    padding: 0.75rem;
-  }
-  
-  .prod__title {
-    font-size: 1rem;
-  }
-  
-  .prod__subtitle {
-    font-size: 0.85rem;
-  }
-}
-
-/* ========================= */
-/* ORIENTAÇÃO PAISAGEM MOBILE */
-/* ========================= */
-
-@media (max-height: 600px) and (orientation: landscape) {
-  .products {
-    min-height: auto;
-    padding: 2rem 5% 1.5rem;
-  }
-  
-  .prod__container {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    padding-top: 1rem;
-  }
-  
-  .prod__img {
-    height: 180px;
-  }
-}
-
-/* ========================= */
-/* TELAS MUITO GRANDES */
-/* ========================= */
-
-@media (min-width: 1600px) {
-  .prod__container {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 100%;
-    margin: 0 auto;
     gap: 2rem;
   }
-  
-  
+
+
   .prod__img {
-    height: 450px;
+    height: 220px;
   }
+}
+
+@media screen and (max-width: 350px) {
+    .prod__content {
+        padding: 1rem;
+    }
 }

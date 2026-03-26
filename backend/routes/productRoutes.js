@@ -6,18 +6,50 @@ import {
   updateProduct,
   deleteProduct
 } from "../controllers/productController.js";
+import { authMiddleware, adminMiddleware } from "../middleware/authMiddleware.js";
+import { 
+  validateProduct, 
+  validateProductUpdate,
+  validateMongoId 
+} from "../middleware/validateInput.js";
+import { productLimiter, writeLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-// antes: upload.single("imagem")
-router.post("/", upload.array("imagem", 3), createProduct);
+// GET - Listar produtos (público, mas com rate limiting)
+router.get("/", productLimiter, getProducts);
 
-router.get("/", getProducts);
-router.get("/:id", async (req,res)=>{
-  const p = await Product.findById(req.params.id);
-  res.json(p);
-});
-router.put("/:id", upload.array("imagem", 3), updateProduct);
-router.delete("/:id", deleteProduct);
+// POST - Criar produto (admin apenas)
+router.post(
+  "/", 
+  authMiddleware,
+  adminMiddleware,
+  writeLimiter,
+  upload.array("imagem", 3), 
+  validateProduct,
+  createProduct
+);
+
+// PUT - Atualizar produto (admin apenas)
+router.put(
+  "/:id", 
+  authMiddleware,
+  adminMiddleware,
+  writeLimiter,
+  validateMongoId,
+  upload.array("imagem", 3), 
+  validateProductUpdate,
+  updateProduct
+);
+
+// DELETE - Deletar produto (admin apenas)
+router.delete(
+  "/:id", 
+  authMiddleware,
+  adminMiddleware,
+  writeLimiter,
+  validateMongoId,
+  deleteProduct
+);
 
 export default router;

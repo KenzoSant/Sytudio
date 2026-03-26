@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sytudio API - Secure Backend",
   "license": "ISC",
   "author": "",
   "type": "module",
@@ -12,20 +12,22 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "bcryptjs": "^3.0.3",
-    "body-parser": "^2.2.2",
+    "body-parser": "^1.20.2",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.0",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.2",
-    "multer": "^2.0.2",
+    "multer": "^1.4.4-lts.1",
     "nodemailer": "^7.0.12",
     "nodemon": "^3.1.11",
     "socket.io": "^4.8.3",
     "stripe": "^20.1.2",
-    "validator": "^13.15.26"
+    "validator": "^13.15.26",
+    "winston": "^3.11.0"
   }
 }

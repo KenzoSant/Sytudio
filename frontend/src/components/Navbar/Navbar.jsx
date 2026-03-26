@@ -1,138 +1,100 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { X, Menu } from "lucide-react";
+import { assets } from "../../assets/assets";
 import "./Navbar.css";
-import { Link, useLocation } from "react-router-dom"; 
-import { assets } from '../../assets/assets';
-import useScrollReveal from "../../hooks/useScroolReveal";
 
 const Navbar = () => {
+    /*=============== SHOW MENU ===============*/
+    const [toggle, setToggle] = useState(false);
+    const [activeSection, setActiveSection] = useState("home");
     const [scrolled, setScrolled] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const location = useLocation(); 
-
-    useScrollReveal();
-
-    useEffect(() => {
-        const onScroll = () => {
-            setScrolled(window.scrollY > 50);
-        };
-
-        window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
-
-    const closeMenu = () => {
-        setIsMenuOpen(false);
-    };
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth > 768) {
-                closeMenu();
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (isMenuOpen) {
-                closeMenu();
+            /*=============== CHANGE BACKGROUND HEADER ===============*/
+            if (window.scrollY >= 50) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
             }
+
+            /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
+            const sections = document.querySelectorAll("section[id]");
+            const scrollY = window.pageYOffset;
+
+            sections.forEach((current) => {
+                const sectionHeight = current.offsetHeight;
+                const sectionTop = current.offsetTop - 58;
+                const sectionId = current.getAttribute("id");
+
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    setActiveSection(sectionId);
+                }
+            });
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isMenuOpen]);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
-    const scrollToSection = (section, e = null) => {
-        if (e) {
-            e.preventDefault(); 
-        }
-        
-        closeMenu();
-        
-        if (location.pathname !== '/') {
-            window.location.href = `/#${section}`;
-            return;
-        }
-
-        setTimeout(() => {
-            const element = document.getElementById(section);
-            if (element) {
-                const yOffset = -80;
-                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                
-                window.scrollTo({
-                    top: y,
-                    behavior: 'smooth'
-                });
-            }
-        }, 100);
-    };
-
-    const handleLogoClick = (e) => {
-        closeMenu();
-        if (location.pathname === '/') {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: 'smooth'
-            });
-        }
-    };
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    const sections = ['home', 'about', 'products', 'contact'];
+    const navLinks = [
+        { id: "home", label: "Início" },
+        { id: "about", label: "Sobre Nós" },
+        { id: "products", label: "Catálogo" },
+        { id: "contact", label: "Contato" },
+    ];
 
     return (
-        <>
-            <div 
-                className={`menu-overlay ${isMenuOpen ? 'active' : ''}`} 
-                onClick={closeMenu}
-            />
-            
-            <div className={`navbar ${scrolled ? "scrolled" : ""} container`}>
-                <Link 
-                    to="/" 
-                    onClick={handleLogoClick}
-                    style={{ display: 'block' }}
-                >
-                    <img src={assets.logo} alt="Logo" className='logo' />
-                </Link>
-                
-                {/* Botão hamburguer (fora do navbar-container) */}
-                <button 
-                    className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
-                    onClick={toggleMenu}
-                    aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
-                >
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+        <motion.header
+            className={scrolled ? "header scroll-header" : "header"}
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+        >
+            <nav className="nav container">
+                <a href="/" className="nav__logo">
+                    <img src={assets.logo} alt="Logo" className="nav__logo-img" />
+                </a>
 
-                {/* Menu desktop */}
-                <ul className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-                    {sections.map((section) => (
-                        <li key={section}>
-                            <Link 
-                                to={`/#${section}`} 
-                                onClick={(e) => scrollToSection(section, e)}
-                            >
-                                {section.toUpperCase()}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </>
+
+                <div className={toggle ? "nav__menu show-menu" : "nav__menu"} id="nav-menu">
+                    <ul className="nav__list grid">
+                        {navLinks.map((link) => (
+                            <li className="nav__item" key={link.id}>
+                                <a
+                                    href={`#${link.id}`}
+                                    className={`nav__link ${activeSection === link.id ? "active-link" : ""}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setToggle(false);
+                                        if (window.lenis) {
+                                            window.lenis.scrollTo(`#${link.id}`, {
+                                                offset: link.id === "contact" ? 0 : -50,
+                                                duration: 1.5,
+                                            });
+                                        }
+                                    }}
+                                >
+                                    {link.label}
+                                </a>
+
+                            </li>
+                        ))}
+                    </ul>
+
+                    <button className="nav__close" id="nav-close" onClick={() => setToggle(false)} aria-label="Fechar menu">
+                      <X size={24} />
+                    </button>
+                </div>
+
+                <button className={`nav__toggle ${toggle ? "hide-toggle" : ""}`} id="nav-toggle" onClick={() => setToggle(true)} aria-label="Abrir menu">
+                    <Menu size={24} />
+                </button>
+            </nav>
+        </motion.header>
     );
 };
+
 
 export default Navbar;

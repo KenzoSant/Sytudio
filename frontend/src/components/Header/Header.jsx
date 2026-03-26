@@ -1,40 +1,88 @@
-import React from "react";
-import useScrollReveal from "../../hooks/useScroolReveal";
+import { motion } from "framer-motion";
 import "./Header.css";
+import { assets } from "../../assets/assets";
 
 const Header = () => {
-  useScrollReveal(); 
-
   return (
-    <header className="header" id="home">
-      <div className="banner container">
+    <section className="home section" id="home">
+      <div className="video-background">
+        <video autoPlay loop muted playsInline className="video-element">
+          <source src={assets.video1} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="video-overlay"></div>
+      </div>
 
-        <div className="section_logo">
-          <h1 className="section__title_name">SYTUDIO</h1>
-        </div>
+      <div className="home__container container grid">
+        <motion.div 
+          className="home__data"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.3,
+                delayChildren: 0.6
+              }
+            }
+          }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.span 
+            className="home__greeting"
+            variants={{
+              hidden: { opacity: 0, x: -100 },
+              visible: { opacity: 1, x: 0 }
+            }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          >
+            Bem-vindo ao Futuro do 3D
+          </motion.span>
+          
+          <motion.h1 
+            className="home__title"
+            variants={{
+              hidden: { opacity: 0, y: -80, scale: 0.8 },
+              visible: { opacity: 1, y: 0, scale: 1 }
+            }}
+            transition={{ duration: 1.8, ease: "easeOut" }}
+          >
+            SYTUDIO
+          </motion.h1>
+          
+          <motion.h3 
+            className="home__education"
+            variants={{
+              hidden: { opacity: 0, x: 100 },
+              visible: { opacity: 1, x: 0 }
+            }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          >
+            Transformando Visões em Realidade
+          </motion.h3>
 
-        <div className="section_infos">
-          <p className="section__subtitle info1">
-            Impressão 3D
-          </p>
 
-          <hr />
-
-          <p className="section__subtitle info2">
-            Plataforma desenvolvida como vitrine exclusiva para exibir uma
-            coleção de peças incríveis, meticulosamente criadas com impressão 3D
-            de alta precisão em resina e finalizadas com pintura manual artesanal.
-          </p>
-        </div>
-
-        <div className="section_button">
-          <a href="#work" className="button btn">
-            Contato <span>➞</span>
-          </a>
-        </div>
+          <motion.a 
+            href="#products" 
+            className="button button--flex"
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Explorar Catálogo
+          </motion.a>
+        </motion.div>
 
       </div>
-    </header>
+
+
+    </section>
   );
 };
 

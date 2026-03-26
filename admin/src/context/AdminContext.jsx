@@ -6,70 +6,192 @@ const AdminContext = createContext();
 export function AdminProvider({ children }) {
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-  // const BASE_URL = "http://localhost:4000";
-
   const API_PRODUCTS = `${BASE_URL}/api/products`;
   const API_USERS = `${BASE_URL}/api/users`;
-  const API = `${BASE_URL}/api/deliveries`;
+  const API_DELIVERIES = `${BASE_URL}/api/deliveries`;
 
   const navigate = useNavigate();
 
+  // 🧹 Limpar dados antigos do localStorage (migração)
+  const cleanOldStorage = () => {
+    // Remover chaves antigas que não são mais usadas
+    const oldKeys = ["admin", "user", "adminData"];
+    oldKeys.forEach(key => {
+      if (localStorage.getItem(key)) {
+        console.log(`🧹 Removendo dados antigos: ${key}`);
+        localStorage.removeItem(key);
+      }
+    });
+  };
+
   const [admin, setAdmin] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("adminToken"));
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [deliveries, setDeliveries] = useState([]);
+  const [authError, setAuthError] = useState(null);
 
   // 🔁 Restaurar sessão ao carregar
   useEffect(() => {
-    const saved = localStorage.getItem("admin");
-    if (saved) {
-      setAdmin(JSON.parse(saved));
-    }
-    setLoadingAuth(false);
+    const verifyToken = async () => {
+      // 🧹 Limpar dados antigos na primeira carga
+      cleanOldStorage();
+
+      const savedToken = localStorage.getItem("adminToken");
+      
+      if (savedToken) {
+        try {
+          // Verificar se o token ainda é válido
+          const res = await fetch(`${API_USERS}/me`, {
+            headers: { "Authorization": `Bearer ${savedToken}` }
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            setAdmin(data.user);
+            setToken(savedToken);
+          } else {
+            // Token inválido ou expirado
+            localStorage.removeItem("adminToken");
+            setToken(null);
+          }
+        } catch (err) {
+          console.error("Erro ao verificar token:", err);
+          localStorage.removeItem("adminToken");
+          setToken(null);
+        }
+      }
+      
+      setLoadingAuth(false);
+    };
+
+    verifyToken();
   }, []);
 
   // ================= AUTH =================
+  
+  /**
+   * Login - Gera JWT no servidor
+   */
   const login = async (email, password) => {
-    const res = await fetch(`${API_USERS}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      setAuthError(null);
+      
+      const res = await fetch(`${API_USERS}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.message || "Erro ao fazer login");
+      }
 
-    localStorage.setItem("admin", JSON.stringify(data));
-    setAdmin(data);
+      // Armazenar token e dados do usuário
+      localStorage.setItem("adminToken", data.token);
+      setToken(data.token);
+      setAdmin(data.user);
 
-    return data;
+      return data;
+    } catch (err) {
+      setAuthError(err.message);
+      throw err;
+    }
   };
 
+  /**
+   * Refresh Token - Obter novo token antes de expirar
+   */
+  const refreshToken = async () => {
+    try {
+      if (!token) return;
+
+      const res = await fetch(`${API_USERS}/refresh-token`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Erro ao renovar token");
+      }
+
+      localStorage.setItem("adminToken", data.token);
+      setToken(data.token);
+
+      return data.token;
+    } catch (err) {
+      console.error("Erro ao renovar token:", err);
+      logout();
+      throw err;
+    }
+  };
+
+  /**
+   * Logout - Limpar sessão
+   */
   const logout = () => {
-    localStorage.removeItem("admin");
+    localStorage.removeItem("adminToken");
+    setToken(null);
     setAdmin(null);
+    setAuthError(null);
     navigate("/login");
   };
 
-  const isAuthenticated = !!admin;
+  const isAuthenticated = !!token && !!admin;
 
-  // ================= FETCH COM TOKEN =================
-  const fetchWithAuth = async (url, options = {}) => {
-    const token = admin?.token;
-
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        Authorization: token ? `Bearer ${token}` : ""
-      }
-    });
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({ message: "Erro" }));
-      throw new Error(data.message);
+  // ================= FETCH COM AUTENTICAÇÃO =================
+  
+  /**
+   * Fetch com autenticação JWT
+   * Renova token automaticamente se expirado
+   */
+  const fetchWithAuth = async (url, options = {}, retryCount = 0) => {
+    if (!token) {
+      throw new Error("Token não encontrado. Faça login novamente.");
     }
 
-    return res;
+    try {
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          ...(!options.body || typeof options.body === "string" ? { "Content-Type": "application/json" } : {}),
+          ...(options.headers || {}),
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      // ⚠️ Token expirado - tentar renovar
+      if (res.status === 401 && retryCount === 0) {
+        console.warn("⚠️ Token expirado. Renovando...");
+        
+        try {
+          const newToken = await refreshToken();
+          // Retry com novo token
+          return fetchWithAuth(url, options, retryCount + 1);
+        } catch (err) {
+          logout();
+          throw new Error("Sessão expirada. Faça login novamente.");
+        }
+      }
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ message: "Erro desconhecido" }));
+        
+        if (res.status === 403) {
+          throw new Error("Acesso negado. Apenas administradores podem realizar esta ação.");
+        }
+        
+        throw new Error(data.message || `Erro ${res.status}`);
+      }
+
+      return res;
+    } catch (err) {
+      setAuthError(err.message);
+      throw err;
+    }
   };
 
   // ================= PRODUCTS =================
@@ -153,22 +275,22 @@ export function AdminProvider({ children }) {
 
   const fetchDeliveries = async () => {
     try {
-      const res = await fetch(API);
+      const res = await fetchWithAuth(API_DELIVERIES);
       const data = await res.json();
 
       // Garante que todas as datas sejam strings no formato YYYY-MM-DD
-      const adjustedData = data.map((delivery) => ({
+      const adjustedData = data.data?.map((delivery) => ({
         ...delivery,
-        // Se a data estiver em formato ISO, converte para YYYY-MM-DD
         dataEntrega:
           delivery.dataEntrega && delivery.dataEntrega.includes("T")
             ? delivery.dataEntrega.split("T")[0]
             : delivery.dataEntrega
-      }));
+      })) || [];
 
       setDeliveries(adjustedData);
     } catch (error) {
       console.error("Erro ao buscar entregas:", error);
+      setAuthError(error.message);
     }
   };
 
@@ -176,12 +298,14 @@ export function AdminProvider({ children }) {
     try {
       const adjustedDelivery = adjustDeliveryDate(delivery);
 
-      await fetch(API, {
+      const res = await fetchWithAuth(API_DELIVERIES, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(adjustedDelivery)
       });
-      fetchDeliveries();
+      
+      await res.json();
+      await fetchDeliveries();
     } catch (error) {
       console.error("Erro ao adicionar entrega:", error);
       throw error;
@@ -192,12 +316,14 @@ export function AdminProvider({ children }) {
     try {
       const adjustedData = adjustDeliveryDate(data);
 
-      await fetch(`${API}/${id}`, {
+      const res = await fetchWithAuth(`${API_DELIVERIES}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(adjustedData)
       });
-      fetchDeliveries();
+      
+      await res.json();
+      await fetchDeliveries();
     } catch (error) {
       console.error("Erro ao atualizar entrega:", error);
       throw error;
@@ -206,17 +332,20 @@ export function AdminProvider({ children }) {
 
   const deleteDelivery = async (id) => {
     try {
-      await fetch(`${API}/${id}`, { method: "DELETE" });
-      fetchDeliveries();
+      await fetchWithAuth(`${API_DELIVERIES}/${id}`, { method: "DELETE" });
+      await fetchDeliveries();
     } catch (error) {
       console.error("Erro ao deletar entrega:", error);
       throw error;
     }
   };
 
+  // Carregar entregas ao montar o componente (apenas se autenticado)
   useEffect(() => {
-    fetchDeliveries();
-  }, []);
+    if (isAuthenticated) {
+      fetchDeliveries();
+    }
+  }, [isAuthenticated]);
 
   return (
     <AdminContext.Provider
@@ -224,8 +353,10 @@ export function AdminProvider({ children }) {
         admin,
         loadingAuth,
         isAuthenticated,
+        authError,
         login,
         logout,
+        refreshToken,
         createProduct,
         getProducts,
         deleteProduct,

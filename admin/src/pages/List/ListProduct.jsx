@@ -34,7 +34,9 @@ export default function ListProduct() {
     setError("");
     try {
       const data = await getProducts();
-      setProducts(Array.isArray(data) ? data : []);
+      // getProducts retorna { message, data: [...] }
+      const productList = data.data || data || [];
+      setProducts(Array.isArray(productList) ? productList : []);
     } catch (error) {
       setError("Erro ao carregar produtos: " + error.message);
       setProducts([]);
