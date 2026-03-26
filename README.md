@@ -189,14 +189,6 @@ VITE_API_URL=http://localhost:4000
 
 ---
 
-## 📚 Documentação Completa
-
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Guia de deploy em Render.com
-- **[GIT_AND_DEPLOY.md](./GIT_AND_DEPLOY.md)** - Instruções de Git e deploy
-- **[CHANGES_SUMMARY.md](./CHANGES_SUMMARY.md)** - Histórico de mudanças
-
----
-
 ## 🔒 Segurança
 
 Este projeto implementa as melhores práticas de segurança:
