@@ -52,7 +52,6 @@
 - ✅ **JWT com Expiração** - Tokens com 7 dias de validade
 
 ### 💳 Integrações
-- ✅ **Stripe** - Processamento de pagamentos
 - ✅ **Cloudinary** - Armazenamento de imagens
 - ✅ **NodeMailer** - Sistema de email
 - ✅ **Socket.io** - Comunicação em tempo real
@@ -69,7 +68,6 @@
 - **Upload:** Multer + Cloudinary
 - **Segurança:** bcrypt, Helmet, express-rate-limit, express-validator
 - **Comunicação Real-time:** Socket.io
-- **Pagamentos:** Stripe API
 
 ### Frontend
 - **UI Framework:** React 18+
