@@ -14,7 +14,7 @@ const Header = () => {
       </div>
 
       <div className="home__container container grid">
-        <motion.div 
+        <motion.div
           className="home__data"
           variants={{
             hidden: { opacity: 0 },
@@ -30,7 +30,7 @@ const Header = () => {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <motion.span 
+          <motion.span
             className="home__greeting"
             variants={{
               hidden: { opacity: 0, x: -100 },
@@ -40,8 +40,8 @@ const Header = () => {
           >
             Bem-vindo ao Futuro do 3D
           </motion.span>
-          
-          <motion.h1 
+
+          <motion.h1
             className="home__title"
             variants={{
               hidden: { opacity: 0, y: -80, scale: 0.8 },
@@ -51,8 +51,8 @@ const Header = () => {
           >
             SYTUDIO
           </motion.h1>
-          
-          <motion.h3 
+
+          <motion.h3
             className="home__education"
             variants={{
               hidden: { opacity: 0, x: 100 },
@@ -64,8 +64,8 @@ const Header = () => {
           </motion.h3>
 
 
-          <motion.a 
-            href="#products" 
+          <motion.a
+            href="#products"
             className="button button--flex"
             variants={{
               hidden: { opacity: 0, y: 50 },
