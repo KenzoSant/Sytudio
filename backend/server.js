@@ -93,24 +93,24 @@ io.use((socket, next) => {
 
 io.on("connection", socket => {
   console.log("🟢 Cliente conectado:", socket.id);
-  
+
   socket.on("disconnect", () => {
     console.log("🔴 Cliente desconectado:", socket.id);
   });
 });
 
 // ================== WATCHER ==================
-watchProducts(io); 
+watchProducts(io);
 
 // ================== ERROR HANDLER ==================
 app.use((err, req, res, next) => {
   console.error("❌ Erro:", err.message);
-  
+
   // Não expor detalhes internos em produção
-  const message = process.env.NODE_ENV === "production" 
-    ? "Erro no servidor" 
+  const message = process.env.NODE_ENV === "production"
+    ? "Erro no servidor"
     : err.message;
-  
+
   res.status(err.status || 500).json({ message });
 });
 

@@ -15,12 +15,18 @@
   width: 100%;
   height: 100%;
   z-index: -1;
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .video-element {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 .video-overlay {
@@ -30,6 +36,8 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6); /* Darkens the video for better text contrast */
+  pointer-events: none;
+  transform: translateZ(0);
 }
 
 .home__container {

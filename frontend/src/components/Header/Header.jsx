@@ -6,8 +6,16 @@ const Header = () => {
   return (
     <section className="home section" id="home">
       <div className="video-background">
-        <video autoPlay loop muted playsInline className="video-element">
-          <source src={assets.video1} type="video/mp4" />
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          preload="auto"
+          disablePictureInPicture
+          className="video-element"
+        >
+          <source src={assets.background} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="video-overlay"></div>
