@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Sytudio](https://github.com/user-attachments/assets/267d4bf0-fc2c-4869-9d1e-1369c796c7ad)
+<img width="1890" height="1077" alt="Captura de tela 2026-03-26 152844" src="https://github.com/user-attachments/assets/adf2ad02-b5b8-4f89-b206-6e11f7bee672" />
 
 **Uma plataforma de e-commerce moderna, segura e escalável construída com React, Node.js e MongoDB**
 
@@ -52,7 +52,6 @@
 - ✅ **JWT com Expiração** - Tokens com 7 dias de validade
 
 ### 💳 Integrações
-- ✅ **Stripe** - Processamento de pagamentos
 - ✅ **Cloudinary** - Armazenamento de imagens
 - ✅ **NodeMailer** - Sistema de email
 - ✅ **Socket.io** - Comunicação em tempo real
@@ -69,7 +68,6 @@
 - **Upload:** Multer + Cloudinary
 - **Segurança:** bcrypt, Helmet, express-rate-limit, express-validator
 - **Comunicação Real-time:** Socket.io
-- **Pagamentos:** Stripe API
 
 ### Frontend
 - **UI Framework:** React 18+
@@ -186,14 +184,6 @@ VITE_API_URL=http://localhost:4000
 ```env
 VITE_API_URL=http://localhost:4000
 ```
-
----
-
-## 📚 Documentação Completa
-
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Guia de deploy em Render.com
-- **[GIT_AND_DEPLOY.md](./GIT_AND_DEPLOY.md)** - Instruções de Git e deploy
-- **[CHANGES_SUMMARY.md](./CHANGES_SUMMARY.md)** - Histórico de mudanças
 
 ---
 
