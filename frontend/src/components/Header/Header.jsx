@@ -15,7 +15,7 @@ const Header = () => {
           disablePictureInPicture
           className="video-element"
         >
-          <source src={assets.background} type="video/mp4" />
+          <source src={assets.back} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="video-overlay"></div>
