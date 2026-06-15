@@ -85,11 +85,10 @@ export const validateProduct = [
   body("quantidade")
     .isInt({ min: 0 })
     .withMessage("Quantidade deve ser um número inteiro maior ou igual a 0"),
-  
+
   body("categoria")
-    .trim()
-    .notEmpty()
-    .withMessage("Categoria é obrigatória"),
+    .optional()
+    .trim(),
 
   handleValidationErrors
 ];

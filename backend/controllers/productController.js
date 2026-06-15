@@ -28,7 +28,7 @@ export const createProduct = async (req, res) => {
     const product = await Product.create({
       nome: req.body.nome.trim(),
       descricao: req.body.descricao.trim(),
-      categoria: req.body.categoria.trim(),
+      ...(req.body.categoria && { categoria: req.body.categoria.trim() }),
       valor: Number(req.body.valor),
       quantidade: Number(req.body.quantidade),
       imagemUrl: results.map((r) => r.secure_url),

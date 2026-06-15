@@ -28,9 +28,7 @@ const productSchema = new mongoose.Schema({
   },
   categoria: {
     type: String,
-    required: [true, "Categoria é obrigatória"],
-    trim: true,
-    index: true
+    trim: true
   },
   imagemUrl: { 
     type: [String], 
@@ -53,6 +51,6 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Índices para otimizar buscas
-productSchema.index({ nome: "text", descricao: "text", categoria: 1 });
+productSchema.index({ nome: "text", descricao: "text" });
 
 export default mongoose.model("Product", productSchema);
