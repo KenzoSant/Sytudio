@@ -24,6 +24,7 @@ const About = () => {
           transition={{ duration: 1.5, ease: "easeOut" }}
         >
           <img src={assets.shape} alt="Sytudio Shape" className="about__img" />
+          {/* <ShapeModel /> */}
         </motion.div>
 
         <motion.div

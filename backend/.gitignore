@@ -22,3 +22,6 @@ build/
 
 # Uploads
 uploads/
+
+# Scripts utilitários (não subir ao repositório)
+updateToAdmin.js

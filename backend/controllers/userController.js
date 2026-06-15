@@ -4,7 +4,7 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRATION = "7d";
 
 /**
@@ -139,8 +139,7 @@ export const loginUser = async (req, res) => {
     console.error("❌ ERRO NO LOGIN:", err.message);
     console.error("Stack:", err.stack);
     res.status(500).json({ 
-      message: "Erro no servidor",
-      error: err.message 
+      message: "Erro no servidor"
     });
   }
 };

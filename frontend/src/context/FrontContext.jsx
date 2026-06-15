@@ -20,8 +20,31 @@ export function FrontProvider({ children }) {
     });
   };
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const CACHE_KEY = "sytudio_products_cache";
+  const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+  const getCachedProducts = () => {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const { data, timestamp } = JSON.parse(raw);
+      if (Date.now() - timestamp > CACHE_TTL) return null;
+      return data;
+    } catch {
+      return null;
+    }
+  };
+
+  const setCachedProducts = (data) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+    } catch {
+      // localStorage cheio ou indisponível — ignorar silenciosamente
+    }
+  };
+
+  const [products, setProducts] = useState(() => getCachedProducts() || []);
+  const [loading, setLoading] = useState(() => !getCachedProducts());
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("userToken"));
@@ -49,7 +72,9 @@ export function FrontProvider({ children }) {
 
     socket.on("productsUpdated", (data) => {
       console.log("📦 Produtos atualizados em tempo real");
-      setProducts(data.data || data);
+      const updated = data.data || data;
+      setProducts(updated);
+      setCachedProducts(updated);
     });
 
     socket.on("error", (error) => {
@@ -61,7 +86,9 @@ export function FrontProvider({ children }) {
   // Buscar produtos
   const fetchProducts = async () => {
     try {
-      setLoading(true);
+      // Se já tem cache válido, não exibe loading (atualiza silenciosamente)
+      const hasCachedData = products.length > 0;
+      if (!hasCachedData) setLoading(true);
       setError(null);
 
       const headers = {};
@@ -82,9 +109,11 @@ export function FrontProvider({ children }) {
       // Suportar novo formato com .data e também o formato antigo
       const productList = Array.isArray(data) ? data : (data.data || []);
       setProducts(productList);
+      setCachedProducts(productList);
     } catch (err) {
       console.error("Erro ao buscar produtos:", err);
-      setError(err.message);
+      // Só exibe erro se não há produtos em cache para mostrar
+      if (products.length === 0) setError(err.message);
     } finally {
       setLoading(false);
     }

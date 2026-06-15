@@ -2,6 +2,10 @@
   background-color: #000;
   color: #fff;
   overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .section__title {
@@ -14,10 +18,9 @@
   align-items: center;
 }
 
-.about__img-container {
-  display: flex;
-  justify-content: center;
-  position: relative;
+.about__img-container canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .about__img {
@@ -154,7 +157,7 @@
   .about__info {
     grid-template-columns: 1fr;
   }
-  
+
   .about__box {
     padding: 1rem;
   }

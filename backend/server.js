@@ -14,6 +14,16 @@ import { globalLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
 
+// Validar variáveis de ambiente obrigatórias
+if (!process.env.JWT_SECRET) {
+  console.error("❌ ERRO FATAL: A variável de ambiente JWT_SECRET não foi configurada!");
+  process.exit(1);
+}
+if (!process.env.MONGO_URI) {
+  console.error("❌ ERRO FATAL: A variável de ambiente MONGO_URI não foi configurada!");
+  process.exit(1);
+}
+
 // ================== APP ==================
 const app = express();
 const port = process.env.PORT || 4000;
@@ -106,12 +116,15 @@ watchProducts(io);
 app.use((err, req, res, next) => {
   console.error("❌ Erro:", err.message);
 
-  // Não expor detalhes internos em produção
-  const message = process.env.NODE_ENV === "production"
+  const isMulterError = err.name === "MulterError" || err.message.includes("permitidos") || err.message.includes("imagem");
+  const status = err.status || (isMulterError ? 400 : 500);
+
+  // Não expor detalhes internos de erros 500 em produção
+  const message = (process.env.NODE_ENV === "production" && status === 500)
     ? "Erro no servidor"
     : err.message;
 
-  res.status(err.status || 500).json({ message });
+  res.status(status).json({ message });
 });
 
 // ================== START ==================

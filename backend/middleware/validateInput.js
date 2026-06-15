@@ -69,26 +69,27 @@ export const validateProduct = [
     .notEmpty()
     .withMessage("Nome do produto é obrigatório")
     .isLength({ min: 3, max: 200 })
-    .withMessage("Nome deve ter entre 3 e 200 caracteres")
-    .escape(),
+    .withMessage("Nome deve ter entre 3 e 200 caracteres"),
   
   body("descricao")
     .trim()
     .notEmpty()
     .withMessage("Descrição é obrigatória")
     .isLength({ min: 10, max: 1000 })
-    .withMessage("Descrição deve ter entre 10 e 1000 caracteres")
-    .escape(),
+    .withMessage("Descrição deve ter entre 10 e 1000 caracteres"),
   
   body("valor")
     .isFloat({ min: 0.01 })
     .withMessage("Valor deve ser maior que 0"),
+
+  body("quantidade")
+    .isInt({ min: 0 })
+    .withMessage("Quantidade deve ser um número inteiro maior ou igual a 0"),
   
   body("categoria")
     .trim()
     .notEmpty()
-    .withMessage("Categoria é obrigatória")
-    .escape(),
+    .withMessage("Categoria é obrigatória"),
 
   handleValidationErrors
 ];
@@ -105,15 +106,13 @@ export const validateProductUpdate = [
     .optional()
     .trim()
     .isLength({ min: 3, max: 200 })
-    .withMessage("Nome deve ter entre 3 e 200 caracteres")
-    .escape(),
+    .withMessage("Nome deve ter entre 3 e 200 caracteres"),
   
   body("descricao")
     .optional()
     .trim()
     .isLength({ min: 10, max: 1000 })
-    .withMessage("Descrição deve ter entre 10 e 1000 caracteres")
-    .escape(),
+    .withMessage("Descrição deve ter entre 10 e 1000 caracteres"),
   
   body("valor")
     .optional()
