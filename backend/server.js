@@ -28,6 +28,10 @@ if (!process.env.MONGO_URI) {
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Necessário para funcionar corretamente atrás de proxy reverso (Render, Heroku, etc.)
+// Permite que express-rate-limit leia o IP real via X-Forwarded-For
+app.set('trust proxy', 1);
+
 // URLs permitidas (seu frontend e admin)
 const allowedOrigins = [
   "https://sytudio.onrender.com",

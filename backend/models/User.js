@@ -40,8 +40,7 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Índices para otimizar buscas
-userSchema.index({ email: 1 });
+// Índice para otimizar buscas por data de criação
 userSchema.index({ createdAt: 1 });
 
 export default mongoose.model("User", userSchema);
